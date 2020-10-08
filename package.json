@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "continuum",
+  "version": "0.1.0",
+  "description": "A cache-based key-value store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chaphasilor <ppp.u@web.de>",
+  "license": "GPL-3.0"
+}
