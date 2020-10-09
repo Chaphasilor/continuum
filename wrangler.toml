@@ -3,4 +3,4 @@ type = "javascript"
 account_id = "9f6e96dd592da144997123b100291250"
 workers_dev = false
 zone_id = "3e1fb43b9501bf49afe604075f1cd058"
-route = "redirect.chaphasilor.xyz/*"
+routes = ["umami.chaphasilor.xyz/*", "njoy.chaphasilor.xyz/*"]
