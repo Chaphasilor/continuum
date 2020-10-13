@@ -1,3 +1,5 @@
+const WEB_SERVICES_ENDPOINT = `https://web-services.chaphasilor.xyz/url`;
+
 // load the matching redirect response from the cache
 async function handleRequest(event) {
   try {
@@ -108,21 +110,39 @@ async function handleRedirectRequest(event) {
     
     const request = event.request
     let urlWithoutHash = request.url.split('#')[0];
-    let redirectCacheUrl = new URL(urlWithoutHash);
-    redirectCacheUrl.pathname = ``;
-    redirectCacheUrl.search = ``;
+    // let redirectCacheUrl = new URL(urlWithoutHash);
+    // redirectCacheUrl.pathname = ``;
+    // redirectCacheUrl.search = ``;
     
-    const redirectCacheKey = new Request(redirectCacheUrl.toString());
-    const cache = caches.default;
+    // const redirectCacheKey = new Request(redirectCacheUrl.toString());
+    // const cache = caches.default;
     
     
     // return new Response(JSON.stringify(cache));
     // Get this request from this zone's cache
-    let response = await cache.match(redirectCacheKey);
+    // let response = await cache.match(redirectCacheKey);
     
-    if (!response) {
-      return new Response(`Redirect url not set`, {
-        status: 404,
+    // if (!response) {
+    //   return new Response(`Redirect url not set`, {
+    //     status: 404,
+    //     headers: {
+    //       'Access-Control-Allow-Origin': new URL(request.url).origin,
+    //     }
+    //   });
+    // }
+
+    let subdomain = new URL(request.url).hostname.split(`.`)[0];
+
+    let res = await fetch(`${WEB_SERVICES_ENDPOINT}?type=${subdomain}`);
+    let tunnel;
+    try {
+      if (!res.ok) {
+        throw new Error(`Couldn't fetch redirect URL!`);
+      }
+      tunnel = await res.text();
+    } catch (err) {
+      return new Response(`Failed to redirect`, {
+        status: 500,
         headers: {
           'Access-Control-Allow-Origin': new URL(request.url).origin,
         }
@@ -132,7 +152,8 @@ async function handleRedirectRequest(event) {
     let fullRedirectUrl = new URL(request.url);
     // don't override the port
     // THIS MEANS THAT WHEN SETTING THE REDIRECT URL, DON'T PROVIDE A PORT!
-    fullRedirectUrl.hostname = await response.clone().text(); // the body of the response contains the hostname of the redirect url
+    // fullRedirectUrl.hostname = await response.clone().text(); // the body of the response contains the hostname of the redirect url
+    fullRedirectUrl.hostname = new URL(tunnel).hostname;
     
     // return new Response(`test4`);
     return new Response(``, {
@@ -141,7 +162,7 @@ async function handleRedirectRequest(event) {
         'Access-Control-Allow-Origin': new URL(request.url).origin,
         'Location': fullRedirectUrl.toString(),
         // 'Debug': `${fullRedirectUrl.toString()}`,
-        'Debug': `${JSON.stringify(response)}`,
+        'Debug': `${JSON.stringify(subdomain)}`,
         // 'Location': JSON.stringify(response.body),
       }
     });
