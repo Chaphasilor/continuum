@@ -189,8 +189,8 @@ addEventListener("fetch", event => {
           'Access-Control-Allow-Origin': request.headers.get(`origin`),
           'Access-Control-Allow-Methods': `CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE`,
           'Access-Control-Allow-Headers': [...request.headers.entries()].reduce((sum, pair, index) => {
-            return index === 0 ? pair[0] : `${sum}, ${pair[0]}`;
-          }, ``),
+            return index === 0 && sum.length === 0 ? pair[0] : `${sum}, ${pair[0]}`;
+          }, `content-type`),
         }
       }))
     }
