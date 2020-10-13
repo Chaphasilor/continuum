@@ -157,11 +157,11 @@ async function handleRedirectRequest(event) {
     
     // return new Response(`test4`);
     return new Response(``, {
-      status: 302,
+      status: 307,
       headers: {
         'Access-Control-Allow-Origin': new URL(request.url).origin,
         'Location': fullRedirectUrl.toString(),
-        // 'Debug': `${fullRedirectUrl.toString()}`,
+        'Cache-Control': `max-age=${60*5}`,
         'Debug': `${JSON.stringify(subdomain)}`,
         // 'Location': JSON.stringify(response.body),
       }
