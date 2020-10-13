@@ -19,7 +19,7 @@ async function handleRequest(event) {
     if (!response) {
       response = new Response(`Not cached`, {
         headers: {
-          'Access-Control-Allow-Origin': new URL(request.url).origin,
+          'Access-Control-Allow-Origin': request.headers.get(`origin`),
         }
       });
     }
@@ -28,7 +28,7 @@ async function handleRequest(event) {
   } catch (err) {
     return new Response(`Error: ${err.message}`, {
       headers: {
-        'Access-Control-Allow-Origin': new URL(request.url).origin,
+        'Access-Control-Allow-Origin': request.headers.get(`origin`),
       }
     });
   }
@@ -83,14 +83,14 @@ async function handlePostRequest(event) {
     if (response) {
       return new Response(`Added to cache!`, {
         headers: {
-          'Access-Control-Allow-Origin': new URL(request.url).origin,
+          'Access-Control-Allow-Origin': request.headers.get(`origin`),
           // 'debug': `Body: ${JSON.stringify(body)}`,
         }
       });
     } else {
       return new Response(`Failed! Url was ${redirectCacheKey.url}`, {
         headers: {
-          'Access-Control-Allow-Origin': new URL(request.url).origin,
+          'Access-Control-Allow-Origin': request.headers.get(`origin`),
         }
       });
     }
@@ -98,7 +98,7 @@ async function handlePostRequest(event) {
   } catch (err) {
     return new Response(`Error: ${err.message}`, {
       headers: {
-        'Access-Control-Allow-Origin': new URL(request.url).origin,
+        'Access-Control-Allow-Origin': request.headers.get(`origin`),
       }
     });
   }
@@ -126,7 +126,7 @@ async function handleRedirectRequest(event) {
     //   return new Response(`Redirect url not set`, {
     //     status: 404,
     //     headers: {
-    //       'Access-Control-Allow-Origin': new URL(request.url).origin,
+    //       'Access-Control-Allow-Origin': request.headers.get(`origin`),
     //     }
     //   });
     // }
@@ -144,7 +144,7 @@ async function handleRedirectRequest(event) {
       return new Response(`Failed to redirect`, {
         status: 500,
         headers: {
-          'Access-Control-Allow-Origin': new URL(request.url).origin,
+          'Access-Control-Allow-Origin': request.headers.get(`origin`),
         }
       });
     }
@@ -159,7 +159,7 @@ async function handleRedirectRequest(event) {
     return new Response(``, {
       status: 307,
       headers: {
-        'Access-Control-Allow-Origin': new URL(request.url).origin,
+        'Access-Control-Allow-Origin': request.headers.get(`origin`),
         'Location': fullRedirectUrl.toString(),
         'Cache-Control': `max-age=${60*5}`,
         'Debug': `${JSON.stringify(subdomain)}`,
@@ -170,7 +170,7 @@ async function handleRedirectRequest(event) {
   } catch (err) {
     return new Response(`Error: ${err.message}`, {
       headers: {
-        'Access-Control-Allow-Origin': new URL(request.url).origin,
+        'Access-Control-Allow-Origin': request.headers.get(`origin`),
       }
     });
   }
@@ -186,7 +186,7 @@ addEventListener("fetch", event => {
       return event.respondWith(new Response(undefined, {
         status: 200,
         headers: {
-          'Access-Control-Allow-Origin': new URL(request.url).origin,
+          'Access-Control-Allow-Origin': request.headers.get(`origin`),
           'Access-Control-Allow-Methods': `CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE`,
           'Access-Control-Allow-Headers': [...request.headers.entries()].reduce((sum, pair, index) => {
             return index === 0 ? pair[0] : `${sum}, ${pair[0]}`;
@@ -204,7 +204,7 @@ addEventListener("fetch", event => {
         return event.respondWith(new Response(`Method not allowed!`, {
           status: 405,
           headers: {
-            'Access-Control-Allow-Origin': new URL(request.url).origin,
+            'Access-Control-Allow-Origin': request.headers.get(`origin`),
           }
         }))
       }
@@ -215,7 +215,7 @@ addEventListener("fetch", event => {
   } catch (e) {
     return event.respondWith(new Response("Error thrown " + e.message, {
       headers: {
-        'Access-Control-Allow-Origin': new URL(request.url).origin,
+        'Access-Control-Allow-Origin': request.headers.get(`origin`),
       }
     }))
   }
